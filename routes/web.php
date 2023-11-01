@@ -43,7 +43,7 @@ Route::post('stores', [BahanController::class, 'store'])->name('stores');
 
 // Manufaktur Produk
 Route::get('/manufaktur/produk', [ProdukController::class, 'index'])->name('manufaktur.produk');
-Route::get('/create-produk', [ProdukController::class, 'create'])->name('create-produk');
+Route::get('/manufaktur/create-produk', [ProdukController::class, 'create'])->name('create-produk');
 Route::get('/manufaktur/produk-detail/{id}', [ProdukController::class, 'show'])->name('manufaktur.produk-detail');
 Route::get('/manufaktur/produk-update/{id}', [ProdukController::class, 'edit'])->name('manufaktur.produk-update');
 Route::put('/manufaktur/produk-update/{id}', [ProdukController::class, 'update'])->name('manufaktur.produk-update');
@@ -84,20 +84,7 @@ Route::put('/manufaktur/bom-update/{id_bom}', [BomController::class, 'updateBom'
 Route::get('/get-bom/{id_bom}', [BomController::class, 'getBomById'])->name('get-bom');
 
 Route::get('/manufaktur/edit-bom/{id_bom}', [BomController::class, 'editBom'])->name('manufaktur.edit-bom');
-Route::post('manufaktur/bom-update/{id_bom}', [BomController::class, 'updateBom'])->name('manufaktur.bom-update');
+// Route::post('manufaktur/bom-update/{id_bom}', [BomController::class, 'updateBom'])->name('manufaktur.bom-update');
 
 // delete data bom
 Route::delete('/manufaktur/bom-detail/{id}', [BomController::class, 'destroy'])->name('manufaktur.bom-detail.destroy');
-
-
-Route::get('/manufaktur/produk-detail', function () {
-    return view('manufaktur/produk-detail');
-});
-
-Route::get('/manufaktur/create-produk', function () {
-    return view('manufaktur/create-produk');
-});
-
-Route::get('/manufaktur/create-bom', function () {
-    return view('manufaktur/create-bom');
-});

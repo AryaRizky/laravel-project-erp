@@ -14,10 +14,7 @@
             <div class="row p-2 mt-2">
                 <div class="col-sm-6 col-md-8">
                     <p class="fw-bold m-0">Bill Of Material Struktur Biaya | {{ Carbon::now()->format('d/m/Y') }}</p>
-                    @if (isset($bom))
-                        {{-- <p class="m-0">{{ $bom->nama_produk }}</p> --}}
                         <p class="m-0">{{ $bom->internal_referensi }}</p>
-                    @endif
                 </div>
             </div>
 
@@ -33,7 +30,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @if (isset($bom))
+                    
                         <tr>
                             <td>{{ $bom->nama_produk }}</td>
                             <td>{{ $bom->internal_referensi }}</td>
@@ -56,7 +53,6 @@
                             <td>{{ $bom->produk->biaya_produksi }}</td>
                             <td>{{ $bom->bahan->harga_bahan }}</td>
                         </tr>
-                    @endif
                 </tbody>
             </table>
         </div>

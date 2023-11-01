@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+
 use Illuminate\Http\Request;
 use App\Models\Kategori;
 use App\Models\Produk;
@@ -18,60 +19,139 @@ class BomController extends Controller
 
     public function create()
     {
-        $produk = Produk::all();
-        $bahan = Bahan::all();
-        $kategori = Kategori::all();
-        return view('manufaktur.create-bom', compact('produk', 'bahan', 'kategori'));
+        $produkList = Produk::all();
+        $kategoriList = Kategori::all();
+        $bahanList = Bahan::all();
+
+        return view('manufaktur/create-bom', compact('produkList', 'kategoriList', 'bahanList'));
     }
+
+    // public function simpanBOM(Request $request)
+    // {
+    //     $request->validate([
+    //         'nama_produk' => 'required',
+    //         'nama_kategori' => 'required',
+    //         'jumlah_produk' => 'required|numeric',
+    //         'internal_referensi' => 'required|string',
+    //         'nama_bahan' => 'required|array',
+    //         'jumlah_bahan' => 'required|array',
+    //     ]);
+
+    //     $bom = new Bom();
+    //     $bom->id_produk = $request->input('nama_produk');
+    //     $bom->id_kategori = $request->input('nama_kategori');
+    //     $bom->id_bahan = $request->input('nama_bahan');
+    //     $bom->id_bahan = $request->input('id_bahan'); // Mengambil ID bahan, bukan nama bahan
+
+    //     $bom->jumlah_produk = $request->input('jumlah_produk');
+    //     $bom->internal_referensi = $request->input('internal_referensi');
+
+    //     $nama_bahan = $request->input('nama_bahan');
+    //     $jumlah_bahan = $request->input('jumlah_bahan');
+
+    //     // Gabungkan nama bahan dan jumlah bahan ke dalam satu kolom
+    //     $dataBahan = [];
+    //     foreach ($nama_bahan as $key => $bahanId) {
+    //         $bahan = Bahan::find($bahanId);
+    //         if ($bahan) {
+    //             $dataBahan[] = $bahan->nama_bahan . ': ' . $jumlah_bahan[$key];
+    //         }
+    //     }
+
+    //     $bom->nama_bahan = implode(', ', $dataBahan);
+
+    //     $bom->save();
+
+    //     return redirect()
+    //         ->route('manufaktur.detail-bom', ['id_bom' => $bom->id_bom])
+    //         ->with('success', 'Data berhasil disimpan!');
+    // }
+
+
+
+
+    //wes iso narik id 2 bahan
+
+
+    // public function simpanBOM(Request $request)
+    // {
+    //     dd($request->all());
+    //     $request->validate([
+    //         'nama_produk' => 'required',
+    //         'nama_kategori' => 'required',
+    //         'jumlah_produk' => 'required|numeric',
+    //         'internal_referensi' => 'required|string',
+    //         'id_bahan' => 'required|array',
+    //         'jumlah_bahan' => 'required|array',
+    //     ]);
+    
+    //     $bom = new Bom();
+    //     $bom->id_produk = $request->nama_produk;
+    //     $bom->id_kategori = $request->nama_kategori;
+    //     $bom->jumlah_produk = $request->jumlah_produk;
+    //     $bom->internal_referensi = $request->internal_referensi;
+    
+    //     $id_bahan = $request->id_bahan; // Ambil id_bahan yang sesuai
+    //     $nama_bahan = [];
+    
+    //     // Gabungkan nama bahan dan jumlah bahan ke dalam satu kolom
+    //     foreach ($id_bahan as $key => $bahanId) {
+    //         $bahan = Bahan::find($bahanId); // Gantilah 'Bahan' dengan model yang sesuai
+    //         if ($bahan) {
+    //             $nama_bahan[] = $bahan->nama_bahan . ': ' . $request->jumlah_bahan[$key];
+    //         }
+    //     }
+    
+    //     $bom->nama_bahan = implode(', ', $nama_bahan);
+    //     $bom->save();
+    
+    //     return redirect()
+    //         ->route('manufaktur.detail-bom', ['id_bom' => $bom->id_bom])
+    //         ->with('success', 'Data berhasil disimpan!');
+    // }
+
+
+
+
 
     public function simpanBOM(Request $request)
-    {
-        // Validasi data yang dikirim dari formulir
-        $validatedData = $request->validate([
-            'nama_produk' => 'required|integer',
-            'nama_kategori' => 'required|integer',
-            'jumlah_produk' => 'required|numeric',
-            'internal_referensi' => 'required|string',
-            'nama_bahan' => 'required|integer',
-            'jumlah_bahan' => 'required|numeric',
-        ]);
+{
+    dd($request->all());
+    $request->validate([
+        'nama_produk' => 'required',
+        'nama_kategori' => 'required',
+        'jumlah_produk' => 'required|numeric',
+        'internal_referensi' => 'required|string',
+        'id_bahan' => 'required|array',
+        'jumlah_bahan' => 'required|array',
+    ]);
 
-        // Mengambil data nama_produk, nama_kategori, dan nama_bahan dari model terkait
-        $produk = Produk::find($validatedData['nama_produk']);
-        $kategori = Kategori::find($validatedData['nama_kategori']);
-        $bahan = Bahan::find($validatedData['nama_bahan']);
-        
-        if ($produk && $bahan) {
-            $biayaProduksi = $produk->biaya_produksi * $validatedData['jumlah_produk'];
-            $biayaBahan = $bahan->biaya_bahan * $validatedData['jumlah_bahan'];
-        } else {
-            $biayaProduksi = 0;
-            $biayaBahan = 0;
+    $bom = new Bom();
+    $bom->id_produk = $request->nama_produk; // Menggunakan $request->nama_produk yang sesuai
+    $bom->id_kategori = $request->nama_kategori; // Menggunakan $request->nama_kategori yang sesuai
+    $bom->jumlah_produk = $request->jumlah_produk;
+    $bom->internal_referensi = $request->internal_referensi;
+
+    $id_bahan = $request->id_bahan; // Ambil id_bahan yang sesuai
+    $nama_bahan = [];
+
+    // Gabungkan nama bahan dan jumlah bahan ke dalam satu kolom
+    foreach ($id_bahan as $key => $bahanId) {
+        $bahan = Bahan::find($bahanId); // Gantilah 'Bahan' dengan model yang sesuai
+        if ($bahan) {
+            $nama_bahan[] = $bahan->nama_bahan . ': ' . $request->jumlah_bahan[$key]; // Menggunakan $request->jumlah_bahan yang sesuai
         }
-
-        // Simpan data ke database
-        $bom = new Bom();
-        $bom->id_produk = $validatedData['nama_produk'];
-        $bom->id_kategori = $validatedData['nama_kategori'];
-        $bom->jumlah_produk = $validatedData['jumlah_produk'];
-        $bom->internal_referensi = $validatedData['internal_referensi'];
-        $bom->id_bahan = $validatedData['nama_bahan'];
-        $bom->jumlah_bahan = $validatedData['jumlah_bahan'];
-        $bom->total_biaya_produk = $biayaProduksi;
-        $bom->total_biaya_bahan = $biayaBahan;
-
-        // Set nama_produk, nama_kategori, dan nama_bahan dalam model bom
-        $bom->nama_produk = $produk->nama_produk;
-        $bom->nama_kategori = $kategori->nama_kategori;
-        $bom->nama_bahan = $bahan->nama_bahan;
-        
-        $bom->save();
-
-        return redirect()
-            ->route('manufaktur.detail-bom', ['id_bom' => $bom->id_bom])
-            ->with('success', 'Data berhasil disimpan!');
     }
 
+    $bom->nama_bahan = implode(', ', $nama_bahan);
+    $bom->save();
+
+    return redirect()
+        ->route('manufaktur.detail-bom', ['id_bom' => $bom->id_bom])
+        ->with('success', 'Data berhasil disimpan!');
+}
+
+    
     public function detailbom($id_bom)
     {
         // Query bom berdasarkan primary key 'id_bom'
@@ -162,40 +242,39 @@ class BomController extends Controller
     public function getBomById($id_bom)
     {
         $bom = Bom::find($id_bom);
-    
+
         if (!$bom) {
             return response()->json(['error' => 'BOM not found'], 404);
         }
-    
+
         $produk = Produk::all(); // Ganti dengan model Produk yang sesuai
         $kategori = Kategori::all(); // Ganti dengan model Kategori yang sesuai
         $bahan = Bahan::all(); // Ganti dengan model Bahan yang sesuai
-    
+
         $data = [
             'produk' => $produk,
             'kategori' => $kategori,
             'bahan' => $bahan,
         ];
-    
+
         return response()->json($data);
     }
-    
+
     public function getProduk()
     {
         $produk = Produk::all(); // Ganti dengan model Produk yang sesuai
         return response()->json($produk);
     }
-    
+
     public function getKategori()
     {
         $kategori = Kategori::all(); // Ganti dengan model Kategori yang sesuai
         return response()->json($kategori);
     }
-    
+
     public function getBahan()
     {
         $bahan = Bahan::all(); // Ganti dengan model Bahan yang sesuai
         return response()->json($bahan);
     }
-    
 }
