@@ -37,7 +37,7 @@
                             <option value="">- Pilih Kategori -</option>
                             @if (isset($kategoriList))
                                 @foreach ($kategoriList as $item)
-                                    <option value="{{ $item->id_kategori }}">{{ $item->nama_kategori }}</option>
+                                    <option value="{{ $item->nama_kategori }}">{{ $item->nama_kategori }}</option>
                                 @endforeach
                             @endif
                         </select>
@@ -56,12 +56,12 @@
                     <!-- Elemen input awal yang sudah ada -->
                     <div class="dynamicInputs row g-2">
                         <div class="col-md-8">
-                            <label for="nama_bahan[]" class="form-label" >Pilih Bahan</label>
-                            <select class="form-select form-control-sm" id="nama_bahan[]" name="nama_bahan[]" required>
+                            <label for="nama_bahan" class="form-label" >Pilih Bahan</label>
+                            <select class="form-select form-control-sm" id="nama_bahan" name="nama_bahan[]" required>
                                 <option value="">- Pilih bahan -</option>
                                 @if (isset($bahanList))
                                     @foreach ($bahanList as $item)
-                                        <option value="{{ $item->id_bahan }}">{{ $item->nama_bahan }}</option>
+                                        <option value="{{ $item->nama_bahan }}">{{ $item->nama_bahan }}</option>
                                     @endforeach
                                 @endif
                             </select>
@@ -93,7 +93,7 @@
                                 <option value="">- Pilih bahan -</option>
                                 @if (isset($bahanList))
                                     @foreach ($bahanList as $item)
-                                        <option value="{{ $item->id_bahan }}">{{ $item->nama_bahan }}</option>
+                                        <option value="{{ $item->nama_bahan }}">{{ $item->nama_bahan }}</option>
                                     @endforeach
                                 @endif
                             </select>

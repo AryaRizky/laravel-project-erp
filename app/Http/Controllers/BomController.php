@@ -8,13 +8,16 @@ use App\Models\Kategori;
 use App\Models\Produk;
 use App\Models\Bahan;
 use App\Models\Bom;
+use GuzzleHttp\Handler\Proxy;
 
 class BomController extends Controller
 {
     public function index()
     {
         $bom = Bom::all();
-        return view('manufaktur.bom', compact('bom'));
+        $produk = Produk::all();
+        $bahan = Bahan::all();
+        return view('manufaktur.bom', compact('bom', 'produk', 'bahan'));
     }
 
     public function create()
@@ -84,16 +87,16 @@ class BomController extends Controller
     //         'id_bahan' => 'required|array',
     //         'jumlah_bahan' => 'required|array',
     //     ]);
-    
+
     //     $bom = new Bom();
     //     $bom->id_produk = $request->nama_produk;
     //     $bom->id_kategori = $request->nama_kategori;
     //     $bom->jumlah_produk = $request->jumlah_produk;
     //     $bom->internal_referensi = $request->internal_referensi;
-    
+
     //     $id_bahan = $request->id_bahan; // Ambil id_bahan yang sesuai
     //     $nama_bahan = [];
-    
+
     //     // Gabungkan nama bahan dan jumlah bahan ke dalam satu kolom
     //     foreach ($id_bahan as $key => $bahanId) {
     //         $bahan = Bahan::find($bahanId); // Gantilah 'Bahan' dengan model yang sesuai
@@ -101,10 +104,10 @@ class BomController extends Controller
     //             $nama_bahan[] = $bahan->nama_bahan . ': ' . $request->jumlah_bahan[$key];
     //         }
     //     }
-    
+
     //     $bom->nama_bahan = implode(', ', $nama_bahan);
     //     $bom->save();
-    
+
     //     return redirect()
     //         ->route('manufaktur.detail-bom', ['id_bom' => $bom->id_bom])
     //         ->with('success', 'Data berhasil disimpan!');
@@ -114,48 +117,80 @@ class BomController extends Controller
 
 
 
+    // public function simpanBOM(Request $request)
+    // {
+    //     dd($request->all());
+    //     $request->validate([
+    //         'nama_produk' => 'required',
+    //         'nama_kategori' => 'required',
+    //         'jumlah_produk' => 'required|numeric',
+    //         'internal_referensi' => 'required|string',
+    //         'id_bahan' => 'required|array',
+    //         'jumlah_bahan' => 'required|array',
+    //     ]);
+
+    //     $bom = new Bom();
+    //     $bom->id_produk = $request->nama_produk; // Menggunakan $request->nama_produk yang sesuai
+    //     $bom->id_kategori = $request->nama_kategori; // Menggunakan $request->nama_kategori yang sesuai
+    //     $bom->jumlah_produk = $request->jumlah_produk;
+    //     $bom->internal_referensi = $request->internal_referensi;
+
+    //     $id_bahan = $request->id_bahan; // Ambil id_bahan yang sesuai
+    //     $nama_bahan = [];
+
+    //     // Gabungkan nama bahan dan jumlah bahan ke dalam satu kolom
+    //     foreach ($id_bahan as $key => $bahanId) {
+    //         $bahan = Bahan::find($bahanId); // Gantilah 'Bahan' dengan model yang sesuai
+    //         if ($bahan) {
+    //             $nama_bahan[] = $bahan->nama_bahan . ': ' . $request->jumlah_bahan[$key]; // Menggunakan $request->jumlah_bahan yang sesuai
+    //         }
+    //     }
+
+    //     $bom->nama_bahan = implode(', ', $nama_bahan);
+    //     $bom->save();
+
+    //     return redirect()
+    //         ->route('manufaktur.detail-bom', ['id_bom' => $bom->id_bom])
+    //         ->with('success', 'Data berhasil disimpan!');
+    // }
+
+    // cobak
     public function simpanBOM(Request $request)
-{
-    dd($request->all());
-    $request->validate([
-        'nama_produk' => 'required',
-        'nama_kategori' => 'required',
-        'jumlah_produk' => 'required|numeric',
-        'internal_referensi' => 'required|string',
-        'id_bahan' => 'required|array',
-        'jumlah_bahan' => 'required|array',
-    ]);
+    {
+        $request->validate([
+            'nama_produk' => 'required',
+            'nama_kategori' => 'required',
+            'jumlah_produk' => 'required',
+            'internal_referensi' => 'required',
+            'nama_bahan' => 'required|array',
+            'jumlah_bahan' => 'required|array',
+        ]);
 
-    $bom = new Bom();
-    $bom->id_produk = $request->nama_produk; // Menggunakan $request->nama_produk yang sesuai
-    $bom->id_kategori = $request->nama_kategori; // Menggunakan $request->nama_kategori yang sesuai
-    $bom->jumlah_produk = $request->jumlah_produk;
-    $bom->internal_referensi = $request->internal_referensi;
+        $bom = new Bom();
+        $bom->id_produk = $request->nama_produk;
+        $bom->nama_produk = $request->input('nama_produk');
+        $bom->nama_kategori = $request->input('nama_kategori');
+        $bom->jumlah_produk = $request->input('jumlah_produk');
+        $bom->internal_referensi = $request->input('internal_referensi');
 
-    $id_bahan = $request->id_bahan; // Ambil id_bahan yang sesuai
-    $nama_bahan = [];
+        // Menyimpan nama_bahan dan jumlah_bahan sebagai dua array terpisah
+        $bom->nama_bahan = json_encode($request->input('nama_bahan'));
+        $bom->jumlah_bahan = json_encode($request->input('jumlah_bahan'));
 
-    // Gabungkan nama bahan dan jumlah bahan ke dalam satu kolom
-    foreach ($id_bahan as $key => $bahanId) {
-        $bahan = Bahan::find($bahanId); // Gantilah 'Bahan' dengan model yang sesuai
-        if ($bahan) {
-            $nama_bahan[] = $bahan->nama_bahan . ': ' . $request->jumlah_bahan[$key]; // Menggunakan $request->jumlah_bahan yang sesuai
-        }
+        $bom->save();
+
+        return redirect()
+            ->route('manufaktur.detail-bom', ['id_bom' => $bom->id_bom])
+            ->with('success', 'Data berhasil disimpan!');
     }
 
-    $bom->nama_bahan = implode(', ', $nama_bahan);
-    $bom->save();
 
-    return redirect()
-        ->route('manufaktur.detail-bom', ['id_bom' => $bom->id_bom])
-        ->with('success', 'Data berhasil disimpan!');
-}
 
-    
     public function detailbom($id_bom)
     {
         // Query bom berdasarkan primary key 'id_bom'
         $bom = Bom::find($id_bom);
+
 
         return view('manufaktur.detail-bom', compact('bom'));
     }

@@ -14,7 +14,7 @@
             <div class="row p-2 mt-2">
                 <div class="col-sm-6 col-md-8">
                     <p class="fw-bold m-0">Bill Of Material Struktur Biaya | {{ Carbon::now()->format('d/m/Y') }}</p>
-                        <p class="m-0">{{ $bom->internal_referensi }}</p>
+                    <p class="m-0">{{ $bom->internal_referensi }}</p>
                 </div>
             </div>
 
@@ -30,29 +30,72 @@
                     </tr>
                 </thead>
                 <tbody>
-                    
+                    <tr>
+                        <td>{{ $bom->produk->nama_produk }}</td>
+                        <td>{{ $bom->internal_referensi }}</td>
+                        <td></td>
+                        <td>{{ $bom->jumlah_produk }}</td>
+                        <td>{{ $bom->produk->biaya_produksi }}</td>
+                        <?php
+                        // Inisialisasi variabel totalBiayaBahan
+                        $totalBiayaBahan = 0;
+                        ?>
+                        @foreach (json_decode($bom->nama_bahan, true) as $index => $namaBahan)
+                            <?php
+                            $biayaBahan = \DB::table('tb_bahan')
+                                ->where('nama_bahan', $namaBahan)
+                                ->value('biaya_bahan');
+                            $decode = json_decode($bom->jumlah_bahan, true)[$index];
+                            $jumlahBahan = floatval($decode);
+                            $total = $biayaBahan * $jumlahBahan;
+                            $totalBiayaBahan += $total;
+                            ?>
+                        @endforeach
+                        <td>
+                            <?php
+                            echo $totalBiayaBahan;
+                            $bom->total_biaya_bahan = $totalBiayaBahan;
+                            $bom->save();
+                            ?>
+                        </td>
+                    </tr>
+                    @foreach (json_decode($bom->nama_bahan, true) as $index => $namaBahan)
                         <tr>
-                            <td>{{ $bom->nama_produk }}</td>
-                            <td>{{ $bom->internal_referensi }}</td>
-                            <td></td>
-                            <td>{{ $bom->jumlah_produk }}</td>
-                            <td>{{ $bom->total_biaya_produk }}</td>
-                            <td>{{ $bom->total_biaya_bahan }}</td>
-                        </tr>
-                        <tr>
                             <td></td>
                             <td></td>
-                            <td>{{ $bom->nama_bahan }}</td>
-                            <td>{{ $bom->jumlah_bahan }}</td>
-                            <td>{{ $bom->total_biaya_bahan }}</td>
-                            <td>{{ $bom->total_biaya_bahan }}</td>
+                            <td>{{ $namaBahan }}</td>
+                            <td>{{ json_decode($bom->jumlah_bahan, true)[$index] }}</td>
+                            <td>
+                                <?php
+                                $biayaBahan = \DB::table('tb_bahan')
+                                    ->where('nama_bahan', $namaBahan)
+                                    ->value('biaya_bahan');
+                                $decode = json_decode($bom->jumlah_bahan, true)[$index];
+                                $jumlahBahan = floatval($decode);
+                                $total = $biayaBahan * $jumlahBahan;
+                                echo $total;
+                                ?>
+                            </td>
+                            <td>
+                                <?php
+                                $biayaBahan = \DB::table('tb_bahan')
+                                    ->where('nama_bahan', $namaBahan)
+                                    ->value('biaya_bahan');
+                                $decode = json_decode($bom->jumlah_bahan, true)[$index];
+                                $jumlahBahan = floatval($decode);
+                                $total = $biayaBahan * $jumlahBahan;
+                                echo $total;
+                                ?>
+                            </td>
                         </tr>
-                        <tr class="border-none">
-                            <th colspan="3"></th>
-                            <th scope="row">Biaya Satuan</th>
-                            <td>{{ $bom->produk->biaya_produksi }}</td>
-                            <td>{{ $bom->bahan->harga_bahan }}</td>
-                        </tr>
+                    @endforeach
+
+                    <tr class="border-none">
+                        <th colspan="3"></th>
+                        <th scope="row">Biaya Satuan</th>
+                        <td>{{ $bom->produk->biaya_produksi }}</td>
+                        <td>{{ $bom->total_biaya_bahan }}</td>
+                    </tr>
                 </tbody>
             </table>
         </div>

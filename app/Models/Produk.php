@@ -22,9 +22,9 @@ class Produk extends Model
     {
         return $this->belongsTo(Kategori::class, 'id_kategori', 'id_kategori');
     }
-    public function produksi()
+    public function produk()
     {
-        return $this->belongsTo(Produksi::class, 'id_produk', 'id');
+        return $this->belongsTo(Produk::class, 'id_produk', 'id_produk');
     }
 
 
