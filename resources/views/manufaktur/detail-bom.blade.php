@@ -35,7 +35,28 @@
                         <td>{{ $bom->internal_referensi }}</td>
                         <td></td>
                         <td>{{ $bom->jumlah_produk }}</td>
-                        <td>{{ $bom->produk->biaya_produksi }}</td>
+                        {{-- <td>
+                            {{ $bom->total_biaya_produk }}
+                        </td> --}}
+                        <td>
+                            @php
+                                // Ambil nilai jumlah_produk dan biaya_produksi dari tb_produk
+                                $jumlahProduk = $bom->jumlah_produk; // Sesuaikan dengan field yang sesuai di tb_produk
+                                $biayaProduksi = $bom->produk->biaya_produksi; // Sesuaikan dengan field yang sesuai di tb_produk
+                        
+                                // Hitung total_biaya_produk
+                                $totalBiayaProduk = $jumlahProduk * $biayaProduksi;
+                            @endphp
+                        
+                            {{ $totalBiayaProduk }}
+                        
+                            @php
+                                // Simpan total_biaya_produk ke dalam tb_bom
+                                $bom->total_biaya_produk = $totalBiayaProduk;
+                                $bom->save();
+                            @endphp
+                        </td>                        
+
                         <?php
                         // Inisialisasi variabel totalBiayaBahan
                         $totalBiayaBahan = 0;

@@ -16,17 +16,16 @@ class TbBom extends Migration
         Schema::create('tb_bom', function (Blueprint $table) {
             $table->id('id_bom');
             $table->unsignedBigInteger('id_produk');
-            $table->unsignedBigInteger('id_bahan');
-            $table->unsignedBigInteger('id_kategori');
-            $table->string('nama_produk', 255)->nullable();
-            $table->string('nama_kategori', 255)->nullable();
+            $table->unsignedBigInteger('id_bahan')->nullable();
+            $table->unsignedBigInteger('id_kategori')->nullable();
+            $table->string('nama_produk', 255);
+            $table->string('nama_kategori', 255);
             $table->float('jumlah_produk');
             $table->string('internal_referensi', 255);
-            $table->string('nama_bahan', 255)->nullable();
-            $table->float('jumlah_bahan');
-            $table->float('total_biaya_produk')->nullable();
-            $table->float('total_biaya_bahan')->nullable();
-            $table->float('total_bom')->nullable();
+            $table->string('nama_bahan', 255);
+            $table->string('jumlah_bahan', 255);
+            $table->float('total_biaya_produk');
+            $table->float('total_biaya_bahan');
             $table->timestamps();
 
             $table->foreign('id_produk')->references('id_produk')->on('tb_produk');
