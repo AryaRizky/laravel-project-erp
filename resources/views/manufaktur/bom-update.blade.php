@@ -47,7 +47,7 @@
                         <select class="form-select form-control-sm" id="nama_kategori" name="nama_kategori" required>
                             <option value="" hidden>- Pilih Kategori -</option>
                             @foreach ($kategoriList as $item)
-                                <option value="{{ $item->id_kategori }}" selected>
+                                <option value="{{ $item->nama_kategori }}" selected>
                                     {{ $item->nama_kategori }}
                                 </option>
                             @endforeach
@@ -65,7 +65,7 @@
                     </div>
 
                     <!-- Elemen input awal yang sudah ada -->
-                    <div class="dynamicInputs row g-2">
+                    {{-- <div class="dynamicInputs row g-2">
                         <div class="col-md-8">
                             <label for="inputState" class="form-label">Pilih Bahan</label>
                             <select class="form-select form-control-sm" id="nama_bahan" name="nama_bahan" required>
@@ -84,7 +84,52 @@
                             <input type="text" class="form-control form-control-sm" id="jumlah_bahan" name="jumlah_bahan"
                                 required @if (isset($bom)) value="{{ $bom->jumlah_bahan }}" @endif>
                         </div>
-                    </div>
+                    </div> --}}
+                    <div class="dynamicInputsContainer">
+                        @if(isset($bom) && !empty($bom->nama_bahan))
+                            @php
+                                $namaBahanArray = json_decode($bom->nama_bahan, true);
+                                $jumlahBahanArray = json_decode($bom->jumlah_bahan);
+                            @endphp
+                            @for ($i = 0; $i < count($namaBahanArray); $i++)
+                                <div class="dynamicInputs row g-2">
+                                    <div class="col-md-8">
+                                        <label for="inputState" class="form-label">Pilih Bahan</label>
+                                        <select class="form-select form-control-sm" name="nama_bahan[]" required>
+                                            <option value="">- Pilih Bahan -</option>
+                                            @foreach ($bahanList as $item)
+                                                <option value="{{ $item->nama_bahan }}" @if($item->nama_bahan == $namaBahanArray[$i]) selected @endif>
+                                                    {{ $item->nama_bahan }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label for="inputCity" class="form-label">Jumlah</label>
+                                        <input type="text" class="form-control form-control-sm" name="jumlah_bahan[]" required value="{{ $jumlahBahanArray[$i] }}">
+                                    </div>
+                                </div>
+                            @endfor
+                        @else
+                            <div class="dynamicInputs row g-2">
+                                <div class="col-md-8">
+                                    <label for="inputState" class="form-label">Pilih Bahan</label>
+                                    <select class="form-select form-control-sm" name="nama_bahan[]" required>
+                                        <option value="">- Pilih Bahan -</option>
+                                        @foreach ($bahanList as $item)
+                                            <option value="{{ $item->id_bahan }}">
+                                                {{ $item->nama_bahan }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="inputCity" class="form-label">Jumlah</label>
+                                    <input type="text" class="form-control form-control-sm" name="jumlah_bahan[]" required>
+                                </div>
+                            </div>
+                        @endif
+                    </div>                    
 
                     <div class="d-flex justify-content-end">
                         {{-- <button type="button" class="btn btn-primary btn-sm" id="addInputBtn">+</button> --}}

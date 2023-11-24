@@ -1,10 +1,34 @@
-@extends('sidebar')
+<!DOCTYPE html>
+<html lang="en">
 
-@section('title', 'Manufaktur')
-@section('pageTitle', 'Manufaktur')
-@section('pageSubTitle', 'Bills of Materials')
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Print</title>
+    <link href="{{ asset('/vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
 
-@section('content')
+    <!-- Template Main CSS File -->
+    <link href="{{ asset('/css/style.css') }}" rel="stylesheet">
+    <style>
+        @page {
+            size: A4 portrait;
+        }
+
+        @media print {
+            body {
+                background-color: #fff;
+            }
+
+            h3 {
+                color: #000;
+                background-color: transparent;
+            }
+        }
+    </style>
+</head>
+
+<body>
     @php
         use Carbon\Carbon;
     @endphp
@@ -120,22 +144,10 @@
                 </tbody>
             </table>
         </div>
-        <div class="card-footer">
-            <div class="d-flex gap-2 justify-content-end">
-                <a href="{{ route('manufaktur.bom-cetak', ['id' => $bom->id_bom]) }}" target="_blank"
-                    class="btn btn-secondary btn-sm">Print</a>
-                {{-- <button type="submit" class="btn btn-warning btn-sm">Edit</button> --}}
-                @if (isset($bom))
-                    <a href="{{ route('manufaktur.edit-bom', ['id_bom' => $bom->id_bom]) }}"
-                        class="btn btn-warning btn-sm">Edit</a>
-                @endif
-                <form action="{{ route('manufaktur.bom-detail.destroy', ['id' => $bom->id_bom]) }}" method="post">
-
-                    @csrf
-                    @method('DELETE')
-                    <button type="submit" class="btn btn-danger btn-sm">Hapus</button>
-                </form>
-            </div>
-        </div>
     </div>
-@endsection
+    <script>
+        window.print();
+    </script>
+</body>
+
+</html>

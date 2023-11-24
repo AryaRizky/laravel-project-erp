@@ -60,6 +60,7 @@ Route::get('/get-produk', [BomController::class, 'getProduk'])->name('get-produk
 Route::get('/get-kategori', [BomController::class, 'getKategori'])->name('get-kategori');
 Route::get('/get-bahan-data', [BomController::class, 'getBahan'])->name('get-bahan');
 Route::get('/get-bom', [BomController::class, 'getBom'])->name('get-bom');
+Route::get('/manufaktur/bom-cetak/{id}', [BomController::class, 'cetak'])->name('manufaktur.bom-cetak');
 
 Route::get('/manufaktur/bom', [BomController::class, 'index'])->name('manufaktur.bom');
 //Tampilan tok ganok data e

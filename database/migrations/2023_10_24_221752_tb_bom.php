@@ -24,8 +24,8 @@ class TbBom extends Migration
             $table->string('internal_referensi', 255);
             $table->string('nama_bahan', 255);
             $table->string('jumlah_bahan', 255);
-            $table->float('total_biaya_produk');
-            $table->float('total_biaya_bahan');
+            $table->float('total_biaya_produk')->nullable();
+            $table->float('total_biaya_bahan')->nullable();
             $table->timestamps();
 
             $table->foreign('id_produk')->references('id_produk')->on('tb_produk');

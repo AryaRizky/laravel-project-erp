@@ -184,8 +184,6 @@ class BomController extends Controller
             ->with('success', 'Data berhasil disimpan!');
     }
 
-
-
     public function detailbom($id_bom)
     {
         // Query bom berdasarkan primary key 'id_bom'
@@ -208,59 +206,92 @@ class BomController extends Controller
         // return view('manufaktur.bom-update', compact('bom', 'produk', 'kategori', 'bahan'));
 
     }
-    public function updateBom(Request $request, $id_bom)
+    // public function updateBom(Request $request, $id_bom)
+    // {
+    //     // Validasi data yang dikirim dari formulir edit
+    //     $request->validate([
+    //         'nama_produk' => 'required|integer',
+    //         'nama_kategori' => 'required|integer',
+    //         'jumlah_produk' => 'required|numeric',
+    //         'internal_referensi' => 'required|string',
+    //         'nama_bahan' => 'required|integer',
+    //         'jumlah_bahan' => 'required|numeric',
+    //     ]);
+
+    //     // Temukan BOM berdasarkan ID
+    //     $bom = Bom::find($id_bom);
+
+    //     if (!$bom) {
+    //         return back()->with('error', 'BOM tidak ditemukan.');
+    //     }
+
+    //     // Mengambil data nama_produk, nama_kategori, dan nama_bahan dari model terkait
+    //     $produk = Produk::find($request['nama_produk']);
+    //     $kategori = Kategori::find($request['nama_kategori']);
+    //     $bahan = Bahan::find($request['nama_bahan']);
+
+    //     // Perhitungan
+    //     $biayaProduksi = $produk->biaya_produksi;
+    //     $biayaBahan = $bahan->biaya_bahan;
+    //     $totalBiayaProduksi = $biayaProduksi * $request['jumlah_produk'];
+    //     $totalBiayaBahan = $biayaBahan * $request['jumlah_bahan'];
+
+    //     // Perbarui data BOM dengan data yang baru
+    //     $bom->id_produk = $request['nama_produk'];
+    //     $bom->id_kategori = $request['nama_kategori'];
+    //     $bom->jumlah_produk = $request['jumlah_produk'];
+    //     $bom->internal_referensi = $request['internal_referensi'];
+    //     $bom->id_bahan = $request['nama_bahan'];
+    //     $bom->jumlah_bahan = $request['jumlah_bahan'];
+    //     $bom->total_biaya_produk = $totalBiayaProduksi;
+    //     $bom->total_biaya_bahan = $totalBiayaBahan;
+
+    //     // Set nama_produk, nama_kategori, dan nama_bahan dalam model bom
+    //     $bom->nama_produk = $produk->nama_produk;
+    //     $bom->nama_kategori = $kategori->nama_kategori;
+    //     $bom->nama_bahan = $bahan->nama_bahan;
+
+    //     // Lakukan perhitungan total_biaya dan total_bom sesuai dengan logika aplikasi Anda
+
+    //     // Simpan perubahan data BOM
+    //     $bom->save();
+    //     return redirect()
+    //         ->route('manufaktur.detail-bom', ['id_bom' => $bom->id_bom])
+    //         ->with('success', 'Data berhasil diperbarui!');
+    // }
+
+    public function updateBOM(Request $request, $id_bom)
     {
-        // Validasi data yang dikirim dari formulir edit
         $request->validate([
-            'nama_produk' => 'required|integer',
-            'nama_kategori' => 'required|integer',
-            'jumlah_produk' => 'required|numeric',
-            'internal_referensi' => 'required|string',
-            'nama_bahan' => 'required|integer',
-            'jumlah_bahan' => 'required|numeric',
+            'nama_produk' => 'required',
+            'nama_kategori' => 'required',
+            'jumlah_produk' => 'required',
+            'internal_referensi' => 'required',
+            'nama_bahan' => 'required|array',
+            'jumlah_bahan' => 'required|array',
         ]);
 
-        // Temukan BOM berdasarkan ID
-        $bom = Bom::find($id_bom);
+        // Mengambil data BOM berdasarkan $id_bom
+        $bom = Bom::findOrFail($id_bom);
 
-        if (!$bom) {
-            return back()->with('error', 'BOM tidak ditemukan.');
-        }
+        // Update data BOM
+        $bom->id_produk = $request->nama_produk;
+        $bom->nama_produk = $request->input('nama_produk');
+        $bom->nama_kategori = $request->input('nama_kategori');
+        $bom->jumlah_produk = $request->input('jumlah_produk');
+        $bom->internal_referensi = $request->input('internal_referensi');
 
-        // Mengambil data nama_produk, nama_kategori, dan nama_bahan dari model terkait
-        $produk = Produk::find($request['nama_produk']);
-        $kategori = Kategori::find($request['nama_kategori']);
-        $bahan = Bahan::find($request['nama_bahan']);
+        // Menyimpan nama_bahan dan jumlah_bahan sebagai dua array terpisah
+        $bom->nama_bahan = json_encode($request->input('nama_bahan'));
+        $bom->jumlah_bahan = json_encode($request->input('jumlah_bahan'));
 
-        // Perhitungan
-        $biayaProduksi = $produk->biaya_produksi;
-        $biayaBahan = $bahan->biaya_bahan;
-        $totalBiayaProduksi = $biayaProduksi * $request['jumlah_produk'];
-        $totalBiayaBahan = $biayaBahan * $request['jumlah_bahan'];
-
-        // Perbarui data BOM dengan data yang baru
-        $bom->id_produk = $request['nama_produk'];
-        $bom->id_kategori = $request['nama_kategori'];
-        $bom->jumlah_produk = $request['jumlah_produk'];
-        $bom->internal_referensi = $request['internal_referensi'];
-        $bom->id_bahan = $request['nama_bahan'];
-        $bom->jumlah_bahan = $request['jumlah_bahan'];
-        $bom->total_biaya_produk = $totalBiayaProduksi;
-        $bom->total_biaya_bahan = $totalBiayaBahan;
-
-        // Set nama_produk, nama_kategori, dan nama_bahan dalam model bom
-        $bom->nama_produk = $produk->nama_produk;
-        $bom->nama_kategori = $kategori->nama_kategori;
-        $bom->nama_bahan = $bahan->nama_bahan;
-
-        // Lakukan perhitungan total_biaya dan total_bom sesuai dengan logika aplikasi Anda
-
-        // Simpan perubahan data BOM
         $bom->save();
+
         return redirect()
             ->route('manufaktur.detail-bom', ['id_bom' => $bom->id_bom])
             ->with('success', 'Data berhasil diperbarui!');
     }
+
 
     public function destroy($id)
     {
@@ -270,8 +301,10 @@ class BomController extends Controller
             return redirect()->route('manufaktur.bom')->with('error', 'Data Bom tidak ditemukan.');
         }
 
+        $namaProduk = $bom->produk->nama_produk;
+
         $bom->delete();
-        return redirect()->route('manufaktur.bom')->with('success', 'Data Bom berhasil dihapus.');
+        return redirect()->route('manufaktur.bom')->with('success', 'Data Bom dengan produk ' . $namaProduk . ' berhasil dihapus.');
     }
 
     public function getBomById($id_bom)
@@ -311,5 +344,11 @@ class BomController extends Controller
     {
         $bahan = Bahan::all(); // Ganti dengan model Bahan yang sesuai
         return response()->json($bahan);
+    }
+
+    public function cetak($id)
+    {
+        $bom = Bom::find($id);
+        return view('manufaktur.bom-cetak', compact('bom'));
     }
 }
